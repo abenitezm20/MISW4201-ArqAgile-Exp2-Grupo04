@@ -6,6 +6,8 @@ import hashlib
 from modelos import db, Usuario, OTP
 from Logica.Logica import Logica
 
+logging.basicConfig(level=logging.INFO, filename='audit.log', encoding='utf-8', format='%(asctime)s %(message)s')
+
 class VistaLogIn(Resource):
     
     def post(self):
@@ -14,40 +16,29 @@ class VistaLogIn(Resource):
                                        Usuario.contrasena == contrasena_encriptada).first()
         db.session.commit()
         if usuario is None:
+            logging.error(f'El usuario no existe')
             return "El usuario no existe", 404
         else:
             otp = Logica.generarCodigoOTP()
-
             nuevo_otp = OTP(otp=otp, id_usuario=usuario.id, usuario=usuario.usuario)
             db.session.add(nuevo_otp)
             db.session.commit()
-
-            #additional_claims = {
-            #    "usuario": usuario.usuario,
-            #    "token": otp
-            #}
-            #token_de_acceso = create_access_token(identity=usuario.id, additional_claims=additional_claims)
-            
-            #return {"mensaje": "Inicio de sesión exitoso", "token": token_de_acceso, "id": usuario.id}
+            logging.info('Se genero codigo OTP para usuario: '+usuario.usuario)
             return otp
 
 
 class VistaValidarOTP(Resource):
     
     def post(self):
-        logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
-        handler = logging.FileHandler('test.log') # creates handler for the log file
-        logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
-
-        logger.info("Los parametros de entrada son: otp: " + str(request.json["otp"]) + "  usuario:" + request.json["usuario"])
         otp_almacenado = OTP.query.filter(OTP.otp == request.json["otp"],
                                           OTP.usuario == request.json["usuario"]
                                           ).first()
         db.session.commit()
         if otp_almacenado is None:
+            logging.error(f'Acceso no autorizado')
             return "El OTP no existe", 404
         else:
-            logger.info("EL OTP ES:" + str(otp_almacenado.otp))
+            logging.info('el usuario  '+otp_almacenado.usuario+' se autentico con exito')
             additional_claims = {
                 "usuario": otp_almacenado.usuario,
             }
