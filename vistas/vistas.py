@@ -34,23 +34,6 @@ class VistaLogIn(Resource):
             logging.info('Se genero codigo OTP para usuario: '+usuario.usuario)
             return otp
         
-class VistaLogInUsuario(Resource):
-    
-    def post(self):
-        usuario = Usuario.query.filter(Usuario.usuario == request.json["usuario"],
-                                       Usuario.contrasena == request.json["contrasena"]).first()
-        db.session.commit()
-        if usuario is None:
-            logging.error(f'El usuario no existe')
-            return "El usuario no existe", 404
-        else:
-            otp = Logica.generarCodigoOTP()
-            nuevo_otp = OTP(otp=otp, id_usuario=usuario.id, usuario=usuario.usuario)
-            db.session.add(nuevo_otp)
-            db.session.commit()
-            logging.info('Se genero codigo OTP para usuario: '+usuario.usuario)
-            return otp
-
 
 class VistaValidarOTP(Resource):
     
@@ -82,8 +65,7 @@ class VistaCrearOferta(Resource):
 
         #Validar usuario en el autorizador
         id_usuario = get_jwt_identity()
-        usuario = Usuario.query.get_or_404(id_usuario)
-        json_usuario={"usuario": usuario.usuario, "contrasena": usuario.contrasena}
+        json_usuario={"usuario": "ccp", "contrasena": "usuario1"}
         registro_autorizador = requests.post(login_autorizador, json = json_usuario )
         respuesta_autorizador = json.loads(registro_autorizador.content.decode('utf-8'))
         token_autorizador = respuesta_autorizador['data']
