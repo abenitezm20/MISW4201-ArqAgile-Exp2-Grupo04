@@ -14,7 +14,7 @@ logging.basicConfig(filename='marketing.log', encoding='utf-8', level=logging.IN
 ## Configuración Login
 URL_LOGIN ='http://127.0.0.1:5000/login'
 URL_OBTENER_CANAL ='http://127.0.0.1:5000/api/canales'
-USUARIO_AUTORIZADOR = { "usuario": "ccp", "contrasena": "usuario1"}
+USUARIO_AUTORIZADOR = { "usuario": "cliente1", "contrasena": "cliente1"}
 
 ## Configuración queue marketing
 CANAL_OFERTAS = 'marketing_ofertas'
@@ -45,11 +45,10 @@ class Handler():
         if respCanal.status_code != 200:
             logging.error('Error al intentar obtener el canal autorizado para crear ofertas')
             return
-        canales_marketing = json.loads(respCanal.content.decode('utf-8'))['data']
-        canal_autorizado = canales_marketing[0]
+        canal_marketing = json.loads(respCanal.content.decode('utf-8'))['data']
 
-        print('Escuchando mensajes del canal', canal_autorizado)
-        sub.subscribe(canal_autorizado)
+        print('Escuchando mensajes del canal', canal_marketing)
+        sub.subscribe(canal_marketing)
         Handler.leer_mensajes()
 
     @staticmethod
