@@ -12,8 +12,8 @@ sys.path.insert(0, '../')
 logging.basicConfig(filename='marketing.log', encoding='utf-8', level=logging.INFO)
 
 ## Configuración Login
-URL_LOGIN ='http://127.0.0.1:5000/login'
-URL_OBTENER_CANAL ='http://127.0.0.1:5000/api/canales'
+URL_LOGIN ='http://127.0.0.1:5001/login'
+URL_OBTENER_CANAL ='http://127.0.0.1:5001/api/canales'
 USUARIO_AUTORIZADOR = { "usuario": "cliente1", "contrasena": "cliente1"}
 
 ## Configuración queue marketing
