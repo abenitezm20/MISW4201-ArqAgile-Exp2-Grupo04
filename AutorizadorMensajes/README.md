@@ -9,5 +9,5 @@ en el momento se tienen 3 cuentas creadas, 1 del sevicio emisor de mensajes (cli
 
 ```
 cd AutorizadorMensajes
-flask run -p 6000
+flask run -p 5001
 ```
