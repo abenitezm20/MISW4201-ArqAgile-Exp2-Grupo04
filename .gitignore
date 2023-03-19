@@ -150,3 +150,4 @@ test.db
 .DS_Store
 AutorizadorMensajes/instance/autorizador.sqlite
 marketing/__pycache__/
+marketing/marketing.log
